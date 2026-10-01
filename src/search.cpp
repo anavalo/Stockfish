@@ -1050,6 +1050,7 @@ Value Search::Worker::search(
             if (nmpMinPly || depth < 16)
             {
                 ++ss->priorNMPFailHigh;
+                ++ss->cutoffCnt;
                 return nullValue;
             }
 
@@ -1067,6 +1068,7 @@ Value Search::Worker::search(
             if (v >= beta)
             {
                 ++ss->priorNMPFailHigh;
+                ++ss->cutoffCnt;
                 return nullValue;
             }
         }

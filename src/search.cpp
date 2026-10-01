@@ -1026,7 +1026,10 @@ Value Search::Worker::search(
                              + std::abs(correctionValue) / 198435;
 
         if (eval - futilityMargin >= beta)
+        {
+            ++ss->cutoffCnt;
             return (661 * beta + 363 * eval) / 1024;
+        }
     }
 
     // Step 10. Null move search with verification search
@@ -1050,6 +1053,7 @@ Value Search::Worker::search(
             if (nmpMinPly || depth < 16)
             {
                 ++ss->priorNMPFailHigh;
+                ++ss->cutoffCnt;
                 return nullValue;
             }
 
@@ -1067,6 +1071,7 @@ Value Search::Worker::search(
             if (v >= beta)
             {
                 ++ss->priorNMPFailHigh;
+                ++ss->cutoffCnt;
                 return nullValue;
             }
         }
@@ -1119,7 +1124,10 @@ Value Search::Worker::search(
                                probCutDepth + 1, move, unadjustedStaticEval, tt.generation());
 
                 if (!is_decisive(value))
+                {
+                    ++ss->cutoffCnt;
                     return value - (probCutBeta - beta);
+                }
             }
         }
     }
@@ -1130,7 +1138,10 @@ moves_loop:  // When in check, search starts here
     probCutBeta = beta + 428;
     if ((ttData.bound & BOUND_LOWER) && ttData.depth >= depth - 4 && ttData.value >= probCutBeta
         && !is_decisive(beta) && is_valid(ttData.value) && !is_decisive(ttData.value))
+    {
+        ++ss->cutoffCnt;
         return probCutBeta;
+    }
 
     const PieceToHistory* contHist[] = {
       (ss - 1)->continuationHistory, (ss - 2)->continuationHistory, (ss - 3)->continuationHistory,

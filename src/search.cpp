@@ -1349,6 +1349,7 @@ moves_loop:  // When in check, search starts here
         r += 697;
 
         r -= moveCount * 65;
+        r += 512 * !improving;
         r -= std::abs(correctionValue) / 26310;
 
         // Increase reduction for cut nodes

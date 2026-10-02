@@ -1026,7 +1026,10 @@ Value Search::Worker::search(
                              + std::abs(correctionValue) / 198435;
 
         if (eval - futilityMargin >= beta)
+        {
+            ++ss->cutoffCnt;
             return (661 * beta + 363 * eval) / 1024;
+        }
     }
 
     // Step 10. Null move search with verification search

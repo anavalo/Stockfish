@@ -2030,6 +2030,12 @@ void update_all_stats(const Position& pos,
     if (prevSq != SQ_NONE && ((ss - 1)->moveCount == 1 + (ss - 1)->ttHit) && !pos.captured_piece())
         update_continuation_histories(ss - 1, pos.piece_on(prevSq), prevSq, -malus * 713 / 1024);
 
+    // Same penalty for an early capture of the previous ply that gets refuted
+    else if (prevSq != SQ_NONE && ((ss - 1)->moveCount == 1 + (ss - 1)->ttHit)
+             && pos.captured_piece())
+        captureHistory[pos.piece_on(prevSq)][prevSq][type_of(pos.captured_piece())]
+          << -malus * 713 / 1024;
+
     // Decrease stats for all non-best capture moves
     for (Move move : capturesSearched)
     {

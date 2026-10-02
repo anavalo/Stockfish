@@ -908,6 +908,18 @@ Value Search::Worker::search(
                     update_continuation_histories(ss - 1, pos.piece_on(prevSq), prevSq, -2210);
             }
 
+            // Update correction history on a TT cutoff with the same rule as at
+            // the end of search: the TT value is a search value for this position
+            if (!ss->inCheck && !(ttCapture && ttData.value >= beta)
+                && (ttData.value > ss->staticEval) == (ttData.value >= beta))
+            {
+                auto bonus =
+                  std::clamp(int(ttData.value - ss->staticEval) * depth
+                               * (ttData.value >= beta ? 12 : 18) / 128,
+                             -CORRECTION_HISTORY_LIMIT / 4, CORRECTION_HISTORY_LIMIT / 4);
+                update_correction_history(pos, ss, *this, 1061 * bonus / 1024);
+            }
+
             // Partial workaround for the graph history interaction problem.
             // For high rule50 counts don't produce transposition table cutoffs.
             if (pos.rule50_count() < 96)

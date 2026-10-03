@@ -997,14 +997,20 @@ Value Search::Worker::search(
     if (ss->inCheck)
         goto moves_loop;
 
-    // Use static evaluation difference to improve quiet move ordering
-    if (((ss - 1)->currentMove).is_ok() && !(ss - 1)->inCheck && !priorCapture)
+    // Use static evaluation difference to improve move ordering
+    if (((ss - 1)->currentMove).is_ok() && !(ss - 1)->inCheck)
     {
         int evalDiff = std::clamp(-int((ss - 1)->staticEval + ss->staticEval), -189, 194) + 60;
-        mainHistory[~us][((ss - 1)->currentMove).raw()] << evalDiff * 11;
-        if (!ttHit && type_of(pos.piece_on(prevSq)) != PAWN
-            && ((ss - 1)->currentMove).type_of() != PROMOTION)
-            sharedHistory.pawn_entry(pos)[pos.piece_on(prevSq)][prevSq] << evalDiff * 13;
+        if (!priorCapture)
+        {
+            mainHistory[~us][((ss - 1)->currentMove).raw()] << evalDiff * 11;
+            if (!ttHit && type_of(pos.piece_on(prevSq)) != PAWN
+                && ((ss - 1)->currentMove).type_of() != PROMOTION)
+                sharedHistory.pawn_entry(pos)[pos.piece_on(prevSq)][prevSq] << evalDiff * 13;
+        }
+        else
+            captureHistory[pos.piece_on(prevSq)][prevSq][type_of(pos.captured_piece())]
+              << evalDiff * 11;
     }
 
 

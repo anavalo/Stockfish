@@ -1416,6 +1416,9 @@ moves_loop:  // When in check, search starts here
 
                 // Post LMR continuation history updates
                 update_continuation_histories(ss, movedPiece, move.to_sq(), 1334);
+
+                if (capture)
+                    captureHistory[movedPiece][move.to_sq()][type_of(pos.captured_piece())] << 1334;
             }
         }
 

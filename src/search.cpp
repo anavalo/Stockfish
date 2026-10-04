@@ -1119,7 +1119,14 @@ Value Search::Worker::search(
                                probCutDepth + 1, move, unadjustedStaticEval, tt.generation());
 
                 if (!is_decisive(value))
+                {
+                    // Bonus for the capture that produced the cutoff
+                    captureHistory[pos.moved_piece(move)][move.to_sq()]
+                                  [type_of(pos.piece_on(move.to_sq()))]
+                      << std::min(133 * depth - 81, 1487);
+
                     return value - (probCutBeta - beta);
+                }
             }
         }
     }

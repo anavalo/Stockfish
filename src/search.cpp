@@ -1350,6 +1350,7 @@ moves_loop:  // When in check, search starts here
 
         r -= moveCount * 65;
         r -= std::abs(correctionValue) / 26310;
+        r -= 384 * opponentWorsening;
 
         // Increase reduction for cut nodes
         if (cutNode)

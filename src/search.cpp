@@ -1026,7 +1026,13 @@ Value Search::Worker::search(
                              + std::abs(correctionValue) / 198435;
 
         if (eval - futilityMargin >= beta)
+        {
+            // Extra penalty for early quiet moves of the previous ply
+            if (prevSq != SQ_NONE && (ss - 1)->moveCount < 5 && !priorCapture)
+                update_continuation_histories(ss - 1, pos.piece_on(prevSq), prevSq, -2210);
+
             return (661 * beta + 363 * eval) / 1024;
+        }
     }
 
     // Step 10. Null move search with verification search

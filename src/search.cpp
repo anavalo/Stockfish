@@ -1047,6 +1047,10 @@ Value Search::Worker::search(
         // Do not return unproven mate or TB scores
         if (nullValue >= beta && !is_win(nullValue))
         {
+            // Extra penalty for early quiet moves of the previous ply
+            if (prevSq != SQ_NONE && (ss - 1)->moveCount < 5 && !priorCapture)
+                update_continuation_histories(ss - 1, pos.piece_on(prevSq), prevSq, -2210);
+
             if (nmpMinPly || depth < 16)
             {
                 ++ss->priorNMPFailHigh;

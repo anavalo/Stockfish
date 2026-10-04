@@ -1306,6 +1306,10 @@ moves_loop:  // When in check, search starts here
             {
                 ttMoveHistory << -421 - 110 * depth;
 
+                // Extra penalty for early quiet moves of the previous ply
+                if (prevSq != SQ_NONE && (ss - 1)->moveCount < 5 && !priorCapture)
+                    update_continuation_histories(ss - 1, pos.piece_on(prevSq), prevSq, -2210);
+
                 if (!ss->inCheck && value > ss->staticEval)
                 {
                     const int bonus =

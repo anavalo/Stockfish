@@ -1363,9 +1363,10 @@ moves_loop:  // When in check, search starts here
         if ((ss + 1)->cutoffCnt > 1)
             r += 264 + 1095 * ((ss + 1)->cutoffCnt > 2) + 1138 * allNode;
 
-        // For first picked move (ttMove) reduce reduction
+        // For first picked move (ttMove) reduce reduction, more when ttMoves
+        // have recently been the best move
         else if (move == ttData.move)
-            r -= 2179;
+            r -= 2179 + ttMoveHistory / 4;
 
         if (capture)
             ss->statScore = 873 * int(PieceValue[pos.captured_piece()]) / 128

@@ -1604,7 +1604,7 @@ moves_loop:  // When in check, search starts here
     }
 
     // Bonus for prior quiet countermove that caused the fail low
-    else if (!priorCapture && prevSq != SQ_NONE)
+    else if (!priorCapture && prevSq != SQ_NONE && !excludedMove)
     {
         int bonusScale = -241;
         bonusScale -= (ss - 1)->statScore / 98;
@@ -1629,7 +1629,7 @@ moves_loop:  // When in check, search starts here
     }
 
     // Bonus for prior capture countermove that caused the fail low
-    else if (priorCapture && prevSq != SQ_NONE)
+    else if (priorCapture && prevSq != SQ_NONE && !excludedMove)
     {
         Piece capturedPiece = pos.captured_piece();
         assert(capturedPiece != NO_PIECE);

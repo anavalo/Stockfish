@@ -908,6 +908,11 @@ Value Search::Worker::search(
                     update_continuation_histories(ss - 1, pos.piece_on(prevSq), prevSq, -2210);
             }
 
+            // Bonus for the prior quiet move when the TT entry fails low
+            if (ttData.value < beta && prevSq != SQ_NONE && !priorCapture)
+                update_continuation_histories(ss - 1, pos.piece_on(prevSq), prevSq,
+                                              std::min(221 * depth, 2210));
+
             // Partial workaround for the graph history interaction problem.
             // For high rule50 counts don't produce transposition table cutoffs.
             if (pos.rule50_count() < 96)

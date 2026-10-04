@@ -2007,22 +2007,20 @@ void update_all_stats(const Position& pos,
         bonus += int(bonus * u64(quietsSearched.size() + capturesSearched.size()) / 256);
 
     if (!pos.capture_stage(bestMove))
-    {
         update_quiet_histories(pos, ss, workerThread, bestMove, bonus * 899 / 1024);
-
-        // Decrease stats for all non-best quiet moves
-        int actualMalus = malus * 1159 / 1024;
-        for (Move move : quietsSearched)
-        {
-            actualMalus = actualMalus * 921 / 1024;
-            update_quiet_histories(pos, ss, workerThread, move, -actualMalus);
-        }
-    }
     else
     {
         // Increase stats for the best move in case it was a capture move
         capturedPiece = type_of(pos.piece_on(bestMove.to_sq()));
         captureHistory[movedPiece][bestMove.to_sq()][capturedPiece] << bonus * 1427 / 1024;
+    }
+
+    // Decrease stats for all non-best quiet moves
+    int actualMalus = malus * 1159 / 1024;
+    for (Move move : quietsSearched)
+    {
+        actualMalus = actualMalus * 921 / 1024;
+        update_quiet_histories(pos, ss, workerThread, move, -actualMalus);
     }
 
     // Extra penalty for a quiet early move that was not a TT move in

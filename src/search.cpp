@@ -1345,6 +1345,10 @@ moves_loop:  // When in check, search starts here
             r -= 3023 + PvNode * 1004 + (ttData.value > alpha) * 885
                + (ttData.depth >= depth) * (816 + cutNode * 940);
 
+        // Decrease reduction when the TT entry is at least as deep as this node
+        else if (ttData.depth >= depth)
+            r -= 448;
+
         // Base reduction offset to compensate for other tweaks
         r += 697;
 

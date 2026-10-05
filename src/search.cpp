@@ -1426,6 +1426,11 @@ moves_loop:  // When in check, search starts here
             if (!ttData.move)
                 r += 1127;
 
+            // Extend the ttMove from a deep enough TT entry if we are about to
+            // dive into qsearch
+            if (move == ttData.move && ttData.depth > 1)
+                newDepth = std::max(newDepth, 1);
+
             // If expected reduction is high, we reduce search depth here
             value = -search<NonPV>(pos, ss + 1, -(alpha + 1), -alpha,
                                    newDepth - (r > 5234) - (r > 5487 && newDepth > 2), !cutNode);

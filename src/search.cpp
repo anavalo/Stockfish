@@ -931,10 +931,8 @@ Value Search::Worker::search(
                     return ttData.value;
             }
         }
-        // Case B: No cutoff, but depth was sufficient. Compare the aspiration window to the bound.
-        else if (ttData.bound != BOUND_EXACT
-                 && (ttData.bound & (ttData.value >= beta ? BOUND_UPPER : BOUND_LOWER))
-                 && depth > 5)
+        // Case B: No cutoff because the bound sits on the wrong side of the window
+        else if (depth > 5)
         {
             // If such a mismatch is the only reason cutoff failed, the TT entry is now useless
             ttWriter.penalize(1);
